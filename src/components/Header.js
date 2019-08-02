@@ -22,7 +22,7 @@ class Header extends Component {
             <View style={styles.container}>
                 <View style={styles.rowContainer}>
                     <Image source={icon} style={styles.image} />
-                    <Text style={styles.title}>Lambe Lambe</Text>
+                    <Text style={styles.title}> Mural Kids</Text>
                 </View>
                 <View style={styles.userContainer}>
                     <Text style={styles.user}>{name}</Text>
@@ -48,15 +48,15 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     image: {
-        height: 30,
-        width: 30,
+        height: 40,
+        width: 40,
         resizeMode: 'contain',
     },
     title: {
         color: '#000',
-        fontFamily: 'shelter',
+        fontFamily: 'arial',
         height: 30,
-        fontSize: 28,
+        fontSize: 24,
     },
     userContainer: {
         flexDirection: 'row',

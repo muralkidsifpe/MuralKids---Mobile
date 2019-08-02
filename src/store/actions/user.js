@@ -1,4 +1,4 @@
-import { USER_LOGGED_IN, USER_LOGGED_OUT } from './actionTypes'
+import { USER_LOGGED_IN, USER_LOGGED_OUT, LOADING_USER, USER_LOADED } from './actionTypes'
 import axios from 'axios';
 import * as firebase from "firebase/app";
 import "firebase/auth";
@@ -14,7 +14,7 @@ var firebaseConfig = {
 //const authBaseURL = 'https://www.googleapis.com/identitytoolkit/v3/relyingparty'
 //const API_KEY = 'AIzaSyAlP1upCd8_Gl6FPu8qsrAZ5QHlnDc6438'
 
-export const login = user => {
+export const userLogged = user => {
     return {
         type: USER_LOGGED_IN,
         payload: user
@@ -29,7 +29,9 @@ export const logout = () => {
 
 export const createUser = user => {
     return dispatch => {
-        firebase.initializeApp(firebaseConfig);
+        if (firebase.apps.length === 0) {
+            firebase.initializeApp(firebaseConfig);
+        }
         firebase.auth().createUserWithEmailAndPassword(user.email, user.password)
             .then(function(firebaseUser) {
             //console.warn(firebaseUser);
@@ -59,5 +61,39 @@ export const createUser = user => {
         //             })
         //         }
         //     })
+    }
+}
+
+export const loadingUser = () => {
+    return {
+        type: LOADING_USER
+    }
+}
+
+export const  userLoaded = () => {
+    return {
+        type: USER_LOADED
+    }
+}
+
+export const login = user => {
+    return dispatch => {
+        dispatch(loadingUser());
+        if (firebase.apps.length === 0) {
+        firebase.initializeApp(firebaseConfig);
+        }
+        firebase.auth().signInWithEmailAndPassword(user.email, user.password)
+            .then(function(firebaseUser) {
+                var defaultDatabase = firebase.database();
+                defaultDatabase.ref("users/" + firebaseUser.user.uid).once("value", function(data) {
+                    // do some stuff once
+                    user.password = null;
+                    user.name = data.val().name;
+                    dispatch(userLogged(user));
+                    dispatch(userLoaded());
+                  })
+            }).catch(function(error) {
+                console.error(error);
+            })
     }
 }

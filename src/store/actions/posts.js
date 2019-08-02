@@ -1,4 +1,5 @@
 import { SET_POSTS, ADD_COMMENT, CREATING_POST, POST_CREATED } from './actionTypes';
+import { setMessage } from './message';
 import axios from 'axios'
 
 export const addPost = post => {
@@ -20,6 +21,10 @@ export const addPost = post => {
                 .then(res => {
                     dispatch(fetchPosts())
                     dispatch(postCreated())
+                    dispatch(setMessage({
+                        title: 'Sucesso',
+                        text: 'Nova postagem!'
+                    }))
                 })
             })   
     }
